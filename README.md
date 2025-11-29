@@ -1,5 +1,5 @@
 <div align="center">
-  The <b>slim-react-router</b> is a minimalistic react-router alternative with tiny size and no dependencies.
+  The <b>slim-react-router</b> is a tiny (<b>~1.8KiB</b>) minimalistic react-router alternative with familiar API and no dependencies.
 </div>
 
 <br />
