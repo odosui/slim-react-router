@@ -9,6 +9,10 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"], // Prevents multiple React instances
   },
+  test: {
+    globals: true,
+    environment: "jsdom",
+  },
   build: {
     emptyOutDir: true,
     sourcemap: true,

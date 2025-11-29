@@ -33,11 +33,13 @@ export function matchPath(
   }
 
   const [url, ...values] = match
-  const params: Record<string, string> = {}
-
-  keys.forEach((key, index) => {
-    params[key] = values[index]
-  })
+  const params = keys.reduce(
+    (acc, key, index) => {
+      acc[key] = values[index] ?? ''
+      return acc
+    },
+    {} as Record<string, string>,
+  )
 
   const isExact = pathname === url || pathname === url.replace(/\/$/, '')
 
