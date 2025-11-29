@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { RouterContext } from "./context";
-import { History, Location } from "./types";
+import React, { useEffect, useState, useMemo } from 'react'
+import { RouterContext } from './context'
+import { History, Location } from './types'
 
 interface BrowserRouterProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 function createBrowserHistory(): History {
-  const listeners: Array<() => void> = [];
+  const listeners: Array<() => void> = []
 
   const getLocation = (): Location => {
     return {
@@ -15,44 +15,44 @@ function createBrowserHistory(): History {
       search: window.location.search,
       hash: window.location.hash,
       state: window.history.state,
-    };
-  };
+    }
+  }
 
   const notify = () => {
-    listeners.forEach((listener) => listener());
-  };
+    listeners.forEach((listener) => listener())
+  }
 
   const push = (path: string, state?: any) => {
-    window.history.pushState(state, "", path);
-    notify();
-  };
+    window.history.pushState(state, '', path)
+    notify()
+  }
 
   const replace = (path: string, state?: any) => {
-    window.history.replaceState(state, "", path);
-    notify();
-  };
+    window.history.replaceState(state, '', path)
+    notify()
+  }
 
   const go = (n: number) => {
-    window.history.go(n);
-  };
+    window.history.go(n)
+  }
 
   const goBack = () => {
-    window.history.back();
-  };
+    window.history.back()
+  }
 
   const goForward = () => {
-    window.history.forward();
-  };
+    window.history.forward()
+  }
 
   const listen = (listener: () => void) => {
-    listeners.push(listener);
+    listeners.push(listener)
     return () => {
-      const index = listeners.indexOf(listener);
+      const index = listeners.indexOf(listener)
       if (index > -1) {
-        listeners.splice(index, 1);
+        listeners.splice(index, 1)
       }
-    };
-  };
+    }
+  }
 
   return {
     push,
@@ -61,32 +61,32 @@ function createBrowserHistory(): History {
     goBack,
     goForward,
     get location() {
-      return getLocation();
+      return getLocation()
     },
     listen,
-  };
+  }
 }
 
 export const BrowserRouter: React.FC<BrowserRouterProps> = ({ children }) => {
-  const history = useMemo(() => createBrowserHistory(), []);
-  const [location, setLocation] = useState(history.location);
+  const history = useMemo(() => createBrowserHistory(), [])
+  const [location, setLocation] = useState(history.location)
 
   useEffect(() => {
     const unlisten = history.listen(() => {
-      setLocation(history.location);
-    });
+      setLocation(history.location)
+    })
 
     const handlePopState = () => {
-      setLocation(history.location);
-    };
+      setLocation(history.location)
+    }
 
-    window.addEventListener("popstate", handlePopState);
+    window.addEventListener('popstate', handlePopState)
 
     return () => {
-      unlisten();
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [history]);
+      unlisten()
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [history])
 
   const value = useMemo(
     () => ({
@@ -94,9 +94,9 @@ export const BrowserRouter: React.FC<BrowserRouterProps> = ({ children }) => {
       location,
     }),
     [history, location],
-  );
+  )
 
   return (
     <RouterContext.Provider value={value}>{children}</RouterContext.Provider>
-  );
-};
+  )
+}

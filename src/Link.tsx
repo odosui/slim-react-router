@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
-import { RouterContext } from './context';
-import { LinkProps } from './types';
+import React, { useContext } from 'react'
+import { RouterContext } from './context'
+import { LinkProps } from './types'
 
 export const Link: React.FC<LinkProps> = ({
   to,
@@ -10,18 +10,18 @@ export const Link: React.FC<LinkProps> = ({
   onClick,
   ...rest
 }) => {
-  const context = useContext(RouterContext);
+  const context = useContext(RouterContext)
 
   if (!context) {
-    throw new Error('Link must be used within a Router');
+    throw new Error('Link must be used within a Router')
   }
 
-  const { history } = context;
+  const { history } = context
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     // Call custom onClick if provided
     if (onClick) {
-      onClick(event);
+      onClick(event)
     }
 
     // Don't handle if:
@@ -38,21 +38,21 @@ export const Link: React.FC<LinkProps> = ({
       event.shiftKey ||
       rest.target
     ) {
-      return;
+      return
     }
 
-    event.preventDefault();
+    event.preventDefault()
 
     if (replace) {
-      history.replace(to, state);
+      history.replace(to, state)
     } else {
-      history.push(to, state);
+      history.push(to, state)
     }
-  };
+  }
 
   return (
     <a href={to} onClick={handleClick} {...rest}>
       {children}
     </a>
-  );
-};
+  )
+}

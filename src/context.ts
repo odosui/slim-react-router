@@ -1,4 +1,4 @@
-import { createContext } from 'react';
-import { RouterContextValue } from './types';
+import { createContext } from 'react'
+import { RouterContextValue } from './types'
 
-export const RouterContext = createContext<RouterContextValue | null>(null);
+export const RouterContext = createContext<RouterContextValue | null>(null)

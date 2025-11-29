@@ -1,39 +1,41 @@
-import React, { useContext } from 'react';
-import { RouterContext } from './context';
-import { SwitchProps, RouteProps } from './types';
-import { matchPath } from './utils';
+import React, { Children, FC, isValidElement, useContext } from 'react'
+import { RouterContext } from './context'
+import { RouteProps, SwitchProps } from './types'
+import { matchPath } from './utils'
 
-export const Switch: React.FC<SwitchProps> = ({ children }) => {
-  const context = useContext(RouterContext);
+export const Switch: FC<SwitchProps> = ({ children }) => {
+  const ctx = useContext(RouterContext)
 
-  if (!context) {
-    throw new Error('Switch must be used within a Router');
+  if (!ctx) {
+    throw new Error('Switch must be used within a Router')
   }
 
-  const { location } = context;
+  const { location } = ctx
 
   // Find the first child that matches the current location
-  let matchedElement: React.ReactElement | null = null;
+  let matched: React.ReactElement | null = null
 
-  React.Children.forEach(children, (child) => {
-    if (matchedElement === null && React.isValidElement(child)) {
-      const { path, exact } = child.props as RouteProps;
-
-      if (path) {
-        const paths = Array.isArray(path) ? path : [path];
-        const hasMatch = paths.some(p =>
-          matchPath(location.pathname, { path: p, exact: exact || false })
-        );
-
-        if (hasMatch) {
-          matchedElement = child;
-        }
-      } else {
-        // Route without path always matches (can be used as fallback)
-        matchedElement = child;
-      }
+  Children.forEach(children, (c) => {
+    if (matched !== null || !isValidElement(c)) {
+      return
     }
-  });
 
-  return matchedElement;
-};
+    const { path, exact } = c.props as RouteProps
+
+    if (path) {
+      const paths = Array.isArray(path) ? path : [path]
+      const hasMatch = paths.some((p) =>
+        matchPath(location.pathname, { path: p, exact: exact || false }),
+      )
+
+      if (hasMatch) {
+        matched = c
+      }
+    } else {
+      // Route without path always matches (can be used as fallback)
+      matched = c
+    }
+  })
+
+  return matched
+}
