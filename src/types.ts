@@ -40,6 +40,15 @@ export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement>
   state?: any;
 }
 
+export interface NavLinkProps extends Omit<LinkProps, 'className' | 'style' | 'children'> {
+  exact?: boolean;
+  activeClassName?: string;
+  activeStyle?: React.CSSProperties;
+  className?: string | ((isActive: boolean) => string);
+  style?: React.CSSProperties | ((isActive: boolean) => React.CSSProperties);
+  children?: React.ReactNode | ((isActive: boolean) => React.ReactNode);
+}
+
 export interface RouterContextValue {
   history: History;
   location: Location;
