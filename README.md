@@ -5,6 +5,6 @@
 <br />
 
 <div align="center">
-  [![Type Check](https://github.com/odosui/slim-react-router/actions/workflows/test.yml/badge.svg)](https://github.com/odosui/slim-react-router/actions/workflows/test.yml)
-  [![npm bundle size](https://img.shields.io/bundlephobia/minzip/slim-react-router)](https://bundlephobia.com/package/slim-react-router)
+  <a href="https://github.com/odosui/slim-react-router/actions/workflows/test.yml"><img alt="CI" src="https://github.com/odosui/slim-react-router/actions/workflows/test.yml/badge.svg" /></a>
+  <a href="https://bundlephobia.com/package/slim-react-router"><img alt="npm" src="https://img.shields.io/bundlephobia/minzip/slim-react-router" /></a>
 </div>
