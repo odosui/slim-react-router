@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { RouterContext } from './context'
+import { RouterContext, RouteContext } from './context'
 import { RouteProps } from './types'
 import { matchPath } from './utils'
 
@@ -37,19 +37,17 @@ export const Route: React.FC<RouteProps> = ({
     return null
   }
 
+  // Provide match context to child components
+  let content: React.ReactNode = null
+
   // Render component if provided
   if (Component) {
-    return <Component match={match} />
+    content = <Component match={match} />
+  } else if (element) {
+    content = element
+  } else if (render) {
+    content = render({ match })
   }
 
-  if (element) {
-    return <>{element}</>
-  }
-
-  // Render function if provided
-  if (render) {
-    return <>{render({ match })}</>
-  }
-
-  return null
+  return <RouteContext.Provider value={match}>{content}</RouteContext.Provider>
 }

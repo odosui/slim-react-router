@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react'
-import { RouterContext } from './context'
+import { RouterContext, RouteContext } from './context'
 import { History, Location, Match } from './types'
 import { matchPath } from './utils'
 
@@ -46,8 +46,7 @@ export function useNavigate() {
 export function useParams<
   T extends Record<string, string> = Record<string, string>,
 >(): T {
-  const match = useRouteMatch()
-
+  const match = useContext(RouteContext)
   return (match?.params || {}) as T
 }
 
