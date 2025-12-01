@@ -56,6 +56,12 @@ export interface NavLinkProps
     | ((props: { isActive: boolean }) => React.ReactNode)
 }
 
+export interface NavigateProps {
+  to: string
+  replace?: boolean
+  state?: any
+}
+
 export interface RouterContextValue {
   history: History
   location: Location

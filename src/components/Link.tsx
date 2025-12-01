@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
-import { RouterContext } from './context'
-import { LinkProps } from './types'
+import { RouterContext } from '../context'
+import { LinkProps } from '../types'
 
 export const Link: React.FC<LinkProps> = ({
   to,

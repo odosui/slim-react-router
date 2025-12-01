@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { matchPath, compilePath, normalizePath } from './utils'
+import { matchPath, compilePath, normalizePath } from './paths'
 
 describe('compilePath', () => {
   it('should compile a simple path', () => {

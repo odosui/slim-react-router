@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
-import { RouterContext, RouteContext } from './context'
-import { RouteProps } from './types'
-import { matchPath } from './utils'
+import { RouterContext, RouteContext } from '../context'
+import { RouteProps } from '../types'
+import { matchPath } from '../utils/paths'
 
 export const Route: React.FC<RouteProps> = ({
   path,

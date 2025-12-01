@@ -1,7 +1,7 @@
 import React, { Children, FC, isValidElement, useContext } from 'react'
-import { RouterContext } from './context'
-import { RouteProps, SwitchProps } from './types'
-import { matchPath } from './utils'
+import { RouterContext } from '../context'
+import { RouteProps, SwitchProps } from '../types'
+import { matchPath } from '../utils/paths'
 
 export const Switch: FC<SwitchProps> = ({ children }) => {
   const ctx = useContext(RouterContext)

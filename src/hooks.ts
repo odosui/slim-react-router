@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'react'
 import { RouterContext, RouteContext } from './context'
 import { History, Location, Match } from './types'
-import { matchPath } from './utils'
+import { matchPath } from './utils/paths'
 
 export function useRouter() {
   const context = useContext(RouterContext)

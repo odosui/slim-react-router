@@ -1,10 +1,11 @@
 // Router components
-export { BrowserRouter } from './BrowserRouter'
-export { HashRouter } from './HashRouter'
-export { Route } from './Route'
-export { Switch } from './Switch'
-export { Link } from './Link'
-export { NavLink } from './NavLink'
+export { BrowserRouter } from './components/BrowserRouter'
+export { HashRouter } from './components/HashRouter'
+export { Route } from './components/Route'
+export { Switch } from './components/Switch'
+export { Navigate } from './components/Navigate'
+export { Link } from './components/Link'
+export { NavLink } from './components/NavLink'
 
 // Hooks
 export {
@@ -26,12 +27,13 @@ export type {
   SwitchProps,
   LinkProps,
   NavLinkProps,
+  NavigateProps,
   RouterContextValue,
 } from './types'
 
 // Utils
-export { matchPath } from './utils'
+export { matchPath } from './utils/paths'
 
 // alias for Switch as Routes
-export { Switch as Routes } from './Switch'
+export { Switch as Routes } from './components/Switch'
 export type { SwitchProps as RoutesProps } from './types'

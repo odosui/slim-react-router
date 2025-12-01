@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from './Link'
-import { NavLinkProps } from './types'
-import { useRouteMatch } from './hooks'
+import { NavLinkProps } from '../types'
+import { useRouteMatch } from '../hooks'
 
 export const NavLink: React.FC<NavLinkProps> = ({
   to,

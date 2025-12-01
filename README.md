@@ -66,6 +66,7 @@ function User() {
 - **`<Switch>` / `<Routes>`** (alias) - Renders first matching route
 - **`<Link>`** - Navigation link
 - **`<NavLink>`** - Link with active state styling. Supports `activeClassName` and `activeStyle`
+- **`<Navigate>`** - Declarative navigation component for redirects
 
 ## Hooks
 
@@ -76,3 +77,184 @@ function User() {
 - **`useParams()`** - Get URL parameters from dynamic routes
 - **`useRouteMatch(path?, exact?)`** - Check if path matches current route
 - **`useSearchParams()`** - Get and set query string parameters
+
+### Hooks
+
+#### `useNavigate()`
+
+Navigate programmatically to different routes:
+
+```jsx
+import { useNavigate } from 'slim-react-router'
+
+function LoginButton() {
+  const navigate = useNavigate()
+
+  const handleLogin = async () => {
+    await loginUser()
+    // Navigate to dashboard
+    navigate('/dashboard')
+
+    // Navigate with state
+    navigate('/dashboard', { state: { from: '/login' } })
+
+    // Replace current entry (no back button)
+    navigate('/dashboard', { replace: true })
+
+    // Go back/forward
+    navigate(-1) // back
+    navigate(1) // forward
+  }
+
+  return <button onClick={handleLogin}>Login</button>
+}
+```
+
+#### `useLocation()`
+
+Access the current location:
+
+```jsx
+import { useLocation } from 'slim-react-router'
+
+function CurrentPath() {
+  const location = useLocation()
+
+  return (
+    <div>
+      <p>Current path: {location.pathname}</p>
+      <p>Query string: {location.search}</p>
+      <p>Hash: {location.hash}</p>
+      <p>State: {JSON.stringify(location.state)}</p>
+    </div>
+  )
+}
+```
+
+#### `useParams()`
+
+Extract URL parameters from dynamic routes:
+
+```jsx
+import { useParams } from 'slim-react-router'
+
+function PostDetail() {
+  const { userId, postId } = useParams<{ userId: string; postId: string }>()
+
+  return <div>Post {postId} by user {userId}</div>
+}
+```
+
+#### `useSearchParams()`
+
+Read and update query string parameters:
+
+```jsx
+import { useSearchParams } from 'slim-react-router'
+
+function SearchResults() {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const query = searchParams.get('q')
+  const page = searchParams.get('page') || '1'
+
+  const updateSearch = (newQuery) => {
+    setSearchParams({ q: newQuery, page: '1' })
+  }
+
+  const nextPage = () => {
+    setSearchParams({ q: query, page: String(Number(page) + 1) })
+  }
+
+  return (
+    <div>
+      <p>Searching for: {query}</p>
+      <p>Page: {page}</p>
+      <button onClick={nextPage}>Next Page</button>
+    </div>
+  )
+}
+```
+
+#### `useHistory()`
+
+Access the history object for advanced navigation:
+
+```jsx
+import { useHistory } from 'slim-react-router'
+
+function NavigationControls() {
+  const history = useHistory()
+
+  return (
+    <div>
+      <button onClick={() => history.push('/home')}>Go Home</button>
+      <button onClick={() => history.replace('/home')}>
+        Replace with Home
+      </button>
+      <button onClick={() => history.goBack()}>Back</button>
+      <button onClick={() => history.goForward()}>Forward</button>
+      <button onClick={() => history.go(-2)}>Go back 2 pages</button>
+    </div>
+  )
+}
+```
+
+#### `useRouteMatch()`
+
+Check if a path matches the current route:
+
+```jsx
+import { useRouteMatch } from 'slim-react-router'
+
+function Sidebar() {
+  const userMatch = useRouteMatch('/users/:id')
+  const settingsMatch = useRouteMatch('/settings', true) // exact match
+
+  return (
+    <div>
+      {userMatch && <div>Viewing user: {userMatch.params.id}</div>}
+
+      {settingsMatch && <SettingsPanel />}
+
+      {/* Check multiple paths */}
+      {useRouteMatch(['/dashboard', '/home']) && <QuickActions />}
+    </div>
+  )
+}
+```
+
+### Components
+
+#### `<Navigate>`
+
+Declaratively navigate to a different route. Useful for redirects:
+
+```jsx
+import { Navigate, Routes, Route } from 'slim-react-router'
+
+function App() {
+  return (
+    <Routes>
+      {/* Redirect root to /home */}
+      <Route path="/" exact element={<Navigate to="/home" />} />
+      <Route path="/home" element={<HomePage />} />
+
+      {/* Conditional redirects */}
+      <Route
+        path="/dashboard"
+        element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+      />
+
+      {/* Replace current history entry */}
+      <Route path="/old-path" element={<Navigate to="/new-path" replace />} />
+
+      {/* Navigate with state */}
+      <Route
+        path="/logout"
+        element={<Navigate to="/login" state={{ from: '/logout' }} />}
+      />
+    </Routes>
+  )
+}
+```

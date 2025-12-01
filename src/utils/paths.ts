@@ -1,4 +1,4 @@
-import { Match } from './types'
+import { Match } from '../types'
 
 export function compilePath(path: string): {
   regexp: RegExp
