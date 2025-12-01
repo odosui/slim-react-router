@@ -18,6 +18,11 @@
 - Browser-based and hash-based routing
 - All the essentials: routes, links, navigation, hooks, etc.
 
+## Trade-offs
+
+- Only supports **browser** and **hash** routing (no memory or native)
+- **No nested** routes (flat structure only)
+
 ## Installation
 
 ```bash
