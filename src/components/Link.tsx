@@ -51,7 +51,7 @@ export const Link: React.FC<LinkProps> = ({
   }
 
   return (
-    <a href={to} onClick={handleClick} {...rest}>
+    <a href={history.createHref(to)} onClick={handleClick} {...rest}>
       {children}
     </a>
   )

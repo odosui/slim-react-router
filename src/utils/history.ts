@@ -49,6 +49,8 @@ export function createBrowserHistory(): History {
     }
   }
 
+  const createHref = (path: string) => path
+
   return {
     push,
     replace,
@@ -59,6 +61,7 @@ export function createBrowserHistory(): History {
       return getLocation()
     },
     listen,
+    createHref,
   }
 }
 
@@ -116,6 +119,8 @@ export function createHashHistory(): History {
     }
   }
 
+  const createHref = (path: string) => '#' + path
+
   return {
     push,
     replace,
@@ -126,5 +131,6 @@ export function createHashHistory(): History {
       return getLocation()
     },
     listen,
+    createHref,
   }
 }

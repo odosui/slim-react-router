@@ -13,6 +13,7 @@ export interface History {
   goForward: () => void
   location: Location
   listen: (listener: () => void) => () => void
+  createHref: (path: string) => string
 }
 
 export interface Match {
