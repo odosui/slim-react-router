@@ -24,6 +24,7 @@ const createMockHistory = (overrides?: Partial<History>): History => ({
     hash: '',
   },
   listen: vi.fn(() => vi.fn()),
+  createHref: vi.fn((path: string) => path),
   ...overrides,
 })
 
