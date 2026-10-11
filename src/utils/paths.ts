@@ -22,10 +22,7 @@ export function compilePath(path: string): {
   const keys: string[] = []
   const hasWildcard = TRAILING_WILDCARD.test(path)
   const pattern = escapeRegExp(
-    path
-      .replace(TRAILING_WILDCARD, '')
-      .replace(/\/$/, '')
-      .replace(/^\//, ''),
+    path.replace(TRAILING_WILDCARD, '').replace(/\/$/, '').replace(/^\//, ''),
   ).replace(/:(\w+)/g, (_, key) => {
     keys.push(key)
     return '([^/]+)'

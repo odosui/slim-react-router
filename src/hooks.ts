@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { RouterContext, RouteContext } from './context'
 import { History, Location, Match } from './types'
 import { matchPath } from './utils/paths'
@@ -26,21 +26,21 @@ export function useLocation(): Location {
 export function useNavigate() {
   const history = useHistory()
 
-  return (
-    to: string | number,
-    options?: { replace?: boolean; state?: any },
-  ) => {
-    if (typeof to === 'number') {
-      history.go(to)
-    } else {
-      const { replace = false, state } = options || {}
-      if (replace) {
-        history.replace(to, state)
+  return useCallback(
+    (to: string | number, options?: { replace?: boolean; state?: any }) => {
+      if (typeof to === 'number') {
+        history.go(to)
       } else {
-        history.push(to, state)
+        const { replace = false, state } = options || {}
+        if (replace) {
+          history.replace(to, state)
+        } else {
+          history.push(to, state)
+        }
       }
-    }
-  }
+    },
+    [history],
+  )
 }
 
 export function useParams<
@@ -87,14 +87,15 @@ export function useSearchParams() {
     [location.search],
   )
 
-  const setSearchParams = (
-    params: Record<string, string> | URLSearchParams,
-  ) => {
-    const newParams =
-      params instanceof URLSearchParams ? params : new URLSearchParams(params)
-    const newSearch = newParams.toString()
-    history.replace(`${location.pathname}${newSearch ? '?' + newSearch : ''}`)
-  }
+  const setSearchParams = useCallback(
+    (params: Record<string, string> | URLSearchParams) => {
+      const newParams =
+        params instanceof URLSearchParams ? params : new URLSearchParams(params)
+      const newSearch = newParams.toString()
+      history.replace(`${location.pathname}${newSearch ? '?' + newSearch : ''}`)
+    },
+    [history, location.pathname],
+  )
 
   return [searchParams, setSearchParams] as const
 }

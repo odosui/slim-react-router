@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { renderHook } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 import {
   useRouter,
   useHistory,
@@ -9,6 +9,7 @@ import {
   useRouteMatch,
   useSearchParams,
 } from './hooks'
+import { BrowserRouter } from './components/BrowserRouter'
 import { RouterContext, RouteContext } from './context'
 import { History, Location, RouterContextValue, Match } from './types'
 
@@ -210,6 +211,29 @@ describe('useNavigate', () => {
 
     result.current(2)
     expect(mockHistory.go).toHaveBeenCalledWith(2)
+  })
+
+  it('should keep the same function between renders', () => {
+    const { result, rerender } = renderHook(() => useNavigate(), {
+      wrapper: BrowserRouter,
+    })
+    const navigate = result.current
+
+    rerender()
+
+    expect(result.current).toBe(navigate)
+  })
+
+  it('should keep the same function after navigating', () => {
+    const { result } = renderHook(() => useNavigate(), {
+      wrapper: BrowserRouter,
+    })
+    const navigate = result.current
+
+    act(() => navigate('/somewhere'))
+
+    expect(window.location.pathname).toBe('/somewhere')
+    expect(result.current).toBe(navigate)
   })
 })
 
@@ -520,5 +544,19 @@ describe('useSearchParams', () => {
     const [searchParams] = result.current
 
     expect(searchParams.toString()).toBe('')
+  })
+
+  it('should keep the same setter when only the search changes', () => {
+    window.history.replaceState(null, '', '/home')
+    const { result } = renderHook(() => useSearchParams(), {
+      wrapper: BrowserRouter,
+    })
+    const [, setSearchParams] = result.current
+
+    act(() => setSearchParams({ page: '2' }))
+
+    const [searchParams, setSearchParamsAfterUpdate] = result.current
+    expect(searchParams.get('page')).toBe('2')
+    expect(setSearchParamsAfterUpdate).toBe(setSearchParams)
   })
 })
