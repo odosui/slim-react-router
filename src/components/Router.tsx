@@ -1,11 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { RouterContext } from '../context'
 import { History } from '../types'
+import {
+  HistoryEventName,
+  useHistoryLocation,
+} from '../utils/useHistoryLocation'
 
 interface RouterProps {
   children: React.ReactNode
   createHistory: () => History
-  eventName: 'popstate' | 'hashchange'
+  eventName: HistoryEventName
 }
 
 export const Router: React.FC<RouterProps> = ({
@@ -14,24 +18,7 @@ export const Router: React.FC<RouterProps> = ({
   eventName,
 }) => {
   const history = useMemo(() => createHistory(), [createHistory])
-  const [location, setLocation] = useState(history.location)
-
-  useEffect(() => {
-    const unlisten = history.listen(() => {
-      setLocation(history.location)
-    })
-
-    const handleChange = () => {
-      setLocation(history.location)
-    }
-
-    window.addEventListener(eventName, handleChange)
-
-    return () => {
-      unlisten()
-      window.removeEventListener(eventName, handleChange)
-    }
-  }, [history, eventName])
+  const location = useHistoryLocation(history, eventName)
 
   const value = useMemo(
     () => ({
