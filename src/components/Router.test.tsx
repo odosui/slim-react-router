@@ -7,9 +7,9 @@ import { Navigate } from './Navigate'
 import { Route } from './Route'
 import { Switch } from './Switch'
 
-const RedirectingRoutes = () => (
+const RedirectingRoutes = ({ redirect = <Navigate to="/home" /> }) => (
   <Switch>
-    <Route path="/" exact element={<Navigate to="/home" />} />
+    <Route path="/" exact element={redirect} />
     <Route path="/home" element={<div>Home page</div>} />
   </Switch>
 )
@@ -41,13 +41,27 @@ describe('redirect on initial render', () => {
     expect(container.textContent).toBe('Home page')
   })
 
-  it('should add a single history entry in StrictMode', () => {
+  it('should not add a history entry by default', () => {
+    const entriesBefore = window.history.length
+
+    render(
+      <BrowserRouter>
+        <RedirectingRoutes />
+      </BrowserRouter>,
+    )
+
+    expect(window.history.length).toBe(entriesBefore)
+  })
+
+  it('should add a single history entry in StrictMode when pushing', () => {
     const entriesBefore = window.history.length
 
     const { container } = render(
       <StrictMode>
         <BrowserRouter>
-          <RedirectingRoutes />
+          <RedirectingRoutes
+            redirect={<Navigate to="/home" replace={false} />}
+          />
         </BrowserRouter>
       </StrictMode>,
     )

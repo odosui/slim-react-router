@@ -28,7 +28,7 @@ const createMockLocation = (overrides?: Partial<Location>): Location => ({
 })
 
 describe('Navigate', () => {
-  it('should navigate to specified path on mount', () => {
+  it('should replace the current entry by default', () => {
     const mockHistory = createMockHistory()
     const contextValue: RouterContextValue = {
       history: mockHistory,
@@ -41,11 +41,11 @@ describe('Navigate', () => {
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.push).toHaveBeenCalledWith('/home', undefined)
-    expect(mockHistory.replace).not.toHaveBeenCalled()
+    expect(mockHistory.replace).toHaveBeenCalledWith('/home', undefined)
+    expect(mockHistory.push).not.toHaveBeenCalled()
   })
 
-  it('should use replace when replace prop is true', () => {
+  it('should push when replace prop is false', () => {
     const mockHistory = createMockHistory()
     const contextValue: RouterContextValue = {
       history: mockHistory,
@@ -54,12 +54,12 @@ describe('Navigate', () => {
 
     render(
       <RouterContext.Provider value={contextValue}>
-        <Navigate to="/home" replace />
+        <Navigate to="/home" replace={false} />
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.replace).toHaveBeenCalledWith('/home', undefined)
-    expect(mockHistory.push).not.toHaveBeenCalled()
+    expect(mockHistory.push).toHaveBeenCalledWith('/home', undefined)
+    expect(mockHistory.replace).not.toHaveBeenCalled()
   })
 
   it('should pass state when provided', () => {
@@ -76,10 +76,10 @@ describe('Navigate', () => {
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.push).toHaveBeenCalledWith('/home', state)
+    expect(mockHistory.replace).toHaveBeenCalledWith('/home', state)
   })
 
-  it('should pass state with replace', () => {
+  it('should pass state with push', () => {
     const mockHistory = createMockHistory()
     const contextValue: RouterContextValue = {
       history: mockHistory,
@@ -89,11 +89,11 @@ describe('Navigate', () => {
 
     render(
       <RouterContext.Provider value={contextValue}>
-        <Navigate to="/home" replace state={state} />
+        <Navigate to="/home" replace={false} state={state} />
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.replace).toHaveBeenCalledWith('/home', state)
+    expect(mockHistory.push).toHaveBeenCalledWith('/home', state)
   })
 
   it('should render nothing', () => {
@@ -125,8 +125,8 @@ describe('Navigate', () => {
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.push).toHaveBeenCalledWith('/home', undefined)
-    expect(mockHistory.push).toHaveBeenCalledTimes(1)
+    expect(mockHistory.replace).toHaveBeenCalledWith('/home', undefined)
+    expect(mockHistory.replace).toHaveBeenCalledTimes(1)
 
     rerender(
       <RouterContext.Provider value={contextValue}>
@@ -134,8 +134,8 @@ describe('Navigate', () => {
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.push).toHaveBeenCalledWith('/about', undefined)
-    expect(mockHistory.push).toHaveBeenCalledTimes(2)
+    expect(mockHistory.replace).toHaveBeenCalledWith('/about', undefined)
+    expect(mockHistory.replace).toHaveBeenCalledTimes(2)
   })
 
   it('should navigate again when replace prop changes', () => {
@@ -180,8 +180,8 @@ describe('Navigate', () => {
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.push).toHaveBeenCalledWith('/home', state1)
-    expect(mockHistory.push).toHaveBeenCalledTimes(1)
+    expect(mockHistory.replace).toHaveBeenCalledWith('/home', state1)
+    expect(mockHistory.replace).toHaveBeenCalledTimes(1)
 
     rerender(
       <RouterContext.Provider value={contextValue}>
@@ -189,7 +189,7 @@ describe('Navigate', () => {
       </RouterContext.Provider>,
     )
 
-    expect(mockHistory.push).toHaveBeenCalledWith('/home', state2)
-    expect(mockHistory.push).toHaveBeenCalledTimes(2)
+    expect(mockHistory.replace).toHaveBeenCalledWith('/home', state2)
+    expect(mockHistory.replace).toHaveBeenCalledTimes(2)
   })
 })

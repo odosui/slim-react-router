@@ -5,7 +5,7 @@ import { NavigateProps } from '../types'
 const isSameNavigation = (a: NavigateProps, b: NavigateProps) =>
   a.to === b.to && a.replace === b.replace && a.state === b.state
 
-export function Navigate({ to, replace = false, state }: NavigateProps) {
+export function Navigate({ to, replace = true, state }: NavigateProps) {
   const navigate = useNavigate()
   const lastNavigation = useRef<NavigateProps | null>(null)
 

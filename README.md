@@ -71,7 +71,7 @@ function User() {
 - **`<Switch>` / `<Routes>`** (alias) - Renders first matching route
 - **`<Link>`** - Navigation link
 - **`<NavLink>`** - Link with active state styling. Supports `activeClassName` and `activeStyle`
-- **`<Navigate>`** - Declarative navigation component for redirects
+- **`<Navigate>`** - Declarative navigation component for redirects. Replaces the current history entry unless `replace={false}`
 
 ## Hooks
 
@@ -233,7 +233,7 @@ function Sidebar() {
 
 #### `<Navigate>`
 
-Declaratively navigate to a different route. Useful for redirects:
+Declaratively navigate to a different route. Useful for redirects. It replaces the current history entry by default, so the back button skips the redirecting route:
 
 ```jsx
 import { Navigate, Routes, Route } from 'slim-react-router'
@@ -251,8 +251,11 @@ function App() {
         element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
       />
 
-      {/* Replace current history entry */}
-      <Route path="/old-path" element={<Navigate to="/new-path" replace />} />
+      {/* Keep the current history entry and push a new one */}
+      <Route
+        path="/old-path"
+        element={<Navigate to="/new-path" replace={false} />}
+      />
 
       {/* Navigate with state */}
       <Route
