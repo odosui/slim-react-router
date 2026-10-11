@@ -148,6 +148,83 @@ describe('matchPath', () => {
     })
   })
 
+  describe('special characters', () => {
+    it('should match a dot literally', () => {
+      expect(matchPath('/file.json', { path: '/file.json' })).not.toBeNull()
+      expect(matchPath('/fileXjson', { path: '/file.json' })).toBeNull()
+    })
+
+    it('should match regexp syntax literally', () => {
+      const match = matchPath('/a(b', { path: '/a(b' })
+      expect(match?.url).toBe('/a(b')
+    })
+
+    it('should extract a parameter followed by a literal suffix', () => {
+      const match = matchPath('/files/report.json', {
+        path: '/files/:name.json',
+      })
+      expect(match?.params).toEqual({ name: 'report' })
+    })
+  })
+
+  describe('encoded parameters', () => {
+    it('should decode parameter values', () => {
+      const match = matchPath('/users/John%20Doe', { path: '/users/:name' })
+      expect(match?.params).toEqual({ name: 'John Doe' })
+    })
+
+    it('should keep a malformed value as is', () => {
+      const match = matchPath('/users/%E0%A4%A', { path: '/users/:name' })
+      expect(match?.params).toEqual({ name: '%E0%A4%A' })
+    })
+  })
+
+  describe('wildcard', () => {
+    it('should match any pathname', () => {
+      const match = matchPath('/anything/here', { path: '*' })
+      expect(match).toEqual({
+        path: '*',
+        url: '/anything/here',
+        isExact: true,
+        params: { '*': 'anything/here' },
+      })
+    })
+
+    it('should match the root pathname', () => {
+      const match = matchPath('/', { path: '*' })
+      expect(match?.params).toEqual({ '*': '' })
+    })
+
+    it('should match everything under a prefix', () => {
+      const match = matchPath('/files/docs/report.pdf', { path: '/files/*' })
+      expect(match?.params).toEqual({ '*': 'docs/report.pdf' })
+    })
+
+    it('should match the prefix itself', () => {
+      const match = matchPath('/files', { path: '/files/*' })
+      expect(match?.params).toEqual({ '*': '' })
+    })
+
+    it('should only match whole segments of the prefix', () => {
+      expect(matchPath('/filesystem', { path: '/files/*' })).toBeNull()
+    })
+
+    it('should combine with parameters', () => {
+      const match = matchPath('/users/123/posts/456', { path: '/users/:id/*' })
+      expect(match?.params).toEqual({ id: '123', '*': 'posts/456' })
+    })
+
+    it('should match when exact is true', () => {
+      const match = matchPath('/files/docs', { path: '/files/*', exact: true })
+      expect(match).not.toBeNull()
+    })
+
+    it('should treat an asterisk inside a segment literally', () => {
+      expect(matchPath('/a*b', { path: '/a*b' })).not.toBeNull()
+      expect(matchPath('/aXb', { path: '/a*b' })).toBeNull()
+    })
+  })
+
   describe('trailing slashes', () => {
     it('should match path with trailing slash', () => {
       const match = matchPath('/home/', { path: '/home' })

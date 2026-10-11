@@ -67,7 +67,7 @@ function User() {
 
 - **`<BrowserRouter>`** - Router using HTML5 history API
 - **`<HashRouter>`** - Router using URL hash
-- **`<Route>`** - Renders component when path matches. Supports `path`, `exact`, `element`, `component`, or `render` props. A path matches as a prefix (`/users` also matches `/users/123`); add `exact` to match the full path only
+- **`<Route>`** - Renders component when path matches. Supports `path`, `exact`, `element`, `component`, or `render` props. A path matches as a prefix (`/users` also matches `/users/123`); add `exact` to match the full path only. `path="*"` or a trailing `/*` matches everything that follows and exposes it as `params['*']`
 - **`<Switch>` / `<Routes>`** (alias) - Renders first matching route
 - **`<Link>`** - Navigation link
 - **`<NavLink>`** - Link with active state styling. Supports `activeClassName` and `activeStyle`

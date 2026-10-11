@@ -1,21 +1,44 @@
 import { Match } from '../types'
 
+const WILDCARD_KEY = '*'
+const TRAILING_WILDCARD = /(^|\/)\*$/
+const REGEXP_SPECIAL_CHARS = /[.*+?^${}()|[\]\\]/g
+
+const escapeRegExp = (text: string) =>
+  text.replace(REGEXP_SPECIAL_CHARS, '\\$&')
+
+const decodeParam = (value: string) => {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
 export function compilePath(path: string): {
   regexp: RegExp
   keys: string[]
 } {
   const keys: string[] = []
-  const pattern = path
-    .replace(/\/$/, '')
-    .replace(/^\//, '')
-    .replace(/:(\w+)/g, (_, key) => {
-      keys.push(key)
-      return '([^/]+)'
-    })
+  const hasWildcard = TRAILING_WILDCARD.test(path)
+  const pattern = escapeRegExp(
+    path
+      .replace(TRAILING_WILDCARD, '')
+      .replace(/\/$/, '')
+      .replace(/^\//, ''),
+  ).replace(/:(\w+)/g, (_, key) => {
+    keys.push(key)
+    return '([^/]+)'
+  })
 
-  // Matches the path as a prefix that ends on a segment boundary
+  if (hasWildcard) {
+    keys.push(WILDCARD_KEY)
+  }
+
+  // Without a wildcard, matches the path as a prefix that ends on a segment boundary
   const prefix = pattern ? `/${pattern}` : ''
-  const regexp = new RegExp(`^${prefix}(?=/|$)`)
+  const ending = hasWildcard ? '(?:/(.*))?$' : '(?=/|$)'
+  const regexp = new RegExp(`^${prefix}${ending}`)
 
   return { regexp, keys }
 }
@@ -36,7 +59,7 @@ export function matchPath(
   const [url, ...values] = match
   const params = keys.reduce(
     (acc, key, index) => {
-      acc[key] = values[index] ?? ''
+      acc[key] = decodeParam(values[index] ?? '')
       return acc
     },
     {} as Record<string, string>,
