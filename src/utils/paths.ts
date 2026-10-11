@@ -5,7 +5,7 @@ export function compilePath(path: string): {
   keys: string[]
 } {
   const keys: string[] = []
-  let pattern = path
+  const pattern = path
     .replace(/\/$/, '')
     .replace(/^\//, '')
     .replace(/:(\w+)/g, (_, key) => {
@@ -13,8 +13,9 @@ export function compilePath(path: string): {
       return '([^/]+)'
     })
 
-  pattern = `^/${pattern}/?$`
-  const regexp = new RegExp(pattern)
+  // Matches the path as a prefix that ends on a segment boundary
+  const prefix = pattern ? `/${pattern}` : ''
+  const regexp = new RegExp(`^${prefix}(?=/|$)`)
 
   return { regexp, keys }
 }
@@ -41,7 +42,8 @@ export function matchPath(
     {} as Record<string, string>,
   )
 
-  const isExact = pathname === url || pathname === url.replace(/\/$/, '')
+  const unmatchedRest = pathname.slice(url.length)
+  const isExact = unmatchedRest === '' || unmatchedRest === '/'
 
   if (exact && !isExact) {
     return null
@@ -49,7 +51,7 @@ export function matchPath(
 
   return {
     path,
-    url: url.replace(/\/$/, '') || '/',
+    url: url || '/',
     isExact,
     params,
   }

@@ -77,9 +77,10 @@ describe('matchPath', () => {
       expect(match?.params['id']).toBe('abc123')
     })
 
-    it('should not match parameters with slashes', () => {
+    it('should not capture slashes in parameters', () => {
       const match = matchPath('/users/123/extra', { path: '/users/:id' })
-      expect(match).toBeNull()
+      expect(match?.params['id']).toBe('123')
+      expect(match?.url).toBe('/users/123')
     })
   })
 
@@ -107,6 +108,43 @@ describe('matchPath', () => {
         exact: false,
       })
       expect(match).not.toBeNull()
+    })
+  })
+
+  describe('prefix matching', () => {
+    it('should match a nested pathname', () => {
+      const match = matchPath('/users/123/posts', { path: '/users' })
+      expect(match).toEqual({
+        path: '/users',
+        url: '/users',
+        isExact: false,
+        params: {},
+      })
+    })
+
+    it('should match any pathname against the root path', () => {
+      const match = matchPath('/users/123', { path: '/' })
+      expect(match).toEqual({
+        path: '/',
+        url: '/',
+        isExact: false,
+        params: {},
+      })
+    })
+
+    it('should only match whole segments', () => {
+      const match = matchPath('/users-archive', { path: '/users' })
+      expect(match).toBeNull()
+    })
+
+    it('should not match a nested pathname when exact is true', () => {
+      const match = matchPath('/users/123', { path: '/users', exact: true })
+      expect(match).toBeNull()
+    })
+
+    it('should treat a trailing slash as an exact match', () => {
+      const match = matchPath('/users/', { path: '/users', exact: true })
+      expect(match?.isExact).toBe(true)
     })
   })
 
@@ -143,8 +181,8 @@ describe('matchPath', () => {
     })
 
     it('should return isExact false for non-exact matches', () => {
-      const match = matchPath('/users/123', { path: '/users/:id' })
-      expect(match?.isExact).toBe(true)
+      const match = matchPath('/users/123/posts', { path: '/users/:id' })
+      expect(match?.isExact).toBe(false)
     })
   })
 })
